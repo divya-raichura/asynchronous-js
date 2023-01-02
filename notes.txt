@@ -1,0 +1,71 @@
+asynchronous means time consuming
+something that takes time
+
+so one such eg is fetch 
+
+though js is single threaded it utilizes something called event loop to handle asynchronous operations
+
+// nope this is not what happens
+so what happens is, the code in the file runs line by line but!
+when fetch() is found, it runs separately while the code below continues to run, js does not wait for fetch to fetch the data
+even if fetch() may fetch data quickly, still it is pushed into task queue (microtask queue for fetch, to be precise)
+
+When you make a request using the fetch function, the browser sends the request to the server and waits for the response. 
+When the response is received, the browser resolves the Promise returned by the fetch function with the response.
+This process is managed by the JavaScript runtime and the browser's networking stack, which are responsible for sending and 
+receiving HTTP requests and responses.
+
+In the case of the fetch function, the Promise returned by the fetch function is not fulfilled until the response is 
+received from the server. When the response is received, the Promise is fulfilled with the response, and the event loop 
+can pick up the resolved Promise and execute any callback functions that are attached to it.
+
+
+eg:
+fetch("https://example.com/").then((response) => {
+  console.log(response);
+});
+
+In this code, the fetch function sends a request to the specified URL and returns a Promise. When the response is 
+received, the Promise is fulfilled with the response, and the event loop can execute the callback function passed to 
+the then method, which logs the response to the console.
+
+
+(The event loop is involved in this process, checks the task queue for tasks that are ready to be executed. When a task is completed, the event loop checks the queue again for more tasks to execute.
+when main thread is empty, event loop brings the task in main thread from where it can be executed)
+
+--------------------------------
+
+so when fetch() is executed, it returns pending promise value
+when the server responds and data is availabe, the promise is fulfilled and value is resolved
+in such case, event loop picks the callback function, ie the function that we put inside .then(), it is the callback function
+so, the event loop puts this callback function inside the main thread and it is executed there
+
+but, all this happens only when promise is resolved, and even when promise is resolved, the main thread needs to be empty for the 
+callback function to execute
+
+until then, the code below fetch() is executed and return value from fetch() is just a promise with pending state
+
+so we can use value like array or object returned by server to the fetch() only inside callback function we pass inside 'then'
+
+--------------------------------------
+
+so running js like this asynchronously has become possible because of 
+event loop, task queue, etc which are a part of the JavaScript runtime, which means that it 
+is implemented in the JavaScript engine of the browser or runtime environment (such as Node.js). 
+
+---------------------------------------
+
+so, 
+it can be said that running asynchronous code is possible in JavaScript because of the JavaScript runtime.
+
+The JavaScript runtime is responsible for executing JavaScript code. It provides an environment in which JavaScript code 
+can run, and includes features such as the event loop, which allows JavaScript to perform asynchronous tasks.
+
+The event loop is an important part of JavaScript's concurrency model. It allows asynchronous tasks, such as fetching a 
+response from a server or setting a timeout, to be executed while the main execution thread is busy with other tasks.
+
+The JavaScript runtime also includes other features that enable asynchronous behavior in JavaScript, such as the setTimeout 
+and setInterval functions, which allow you to schedule tasks to be executed at a later time, and the Promise object, which 
+represents the eventual completion or failure of an asynchronous operation.
+
+Together, these features allow JavaScript to perform asynchronous tasks and create responsive, interactive user experiences.
